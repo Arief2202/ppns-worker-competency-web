@@ -23,10 +23,19 @@ Route::middleware('auth')->group(function () {
         
         Route::get('/worker/delete/{id}', 'delete')->name('worker.delete');
 
-        Route::get('/worker/competency/create/{id_number}', 'createCompetencyView')->name('worker.competency.create');
-        Route::post('/worker/competency/create', 'createCompetency')->name('worker.competency.create.post');
-
         Route::get('/worker/detail/{id_number}', 'detail')->name('worker.detail');
+        Route::get('/worker/{verify}/{id}', 'verify')->name('worker.verify');
+
+    });
+    Route::controller(WorkerCompetencyController::class)->group(function () {
+        Route::get('/worker/competency/create/{user_id}', 'createView')->name('worker.competency.create');
+        Route::post('/worker/competency/create', 'create')->name('worker.competency.create.post');
+
+        Route::get('/worker/competency/update/{id}', 'updateView')->name('worker.competency.update');
+        Route::post('/worker/competency/update', 'update')->name('worker.competency.update.post');
+
+        Route::get('/worker/competency/delete/{id}', 'delete')->name('worker.competency.delete');
+        Route::get('/worker/competency/{verify}/{id}', 'verify')->name('worker.competency.verify');
     });
 
 

@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Worker extends Model
 {
     use HasFactory;
+    
+    public function WorkerCompetency()
+    {
+        return WorkerCompetency::where('worker_id', $this->id)->get();
+    }
 }

@@ -17,7 +17,6 @@ class WorkerController extends Controller
         if(Auth::user()->role != 1){
             return redirect('worker');
         };
-
         return view('worker.create');
     }
     public function create(Request $request)
@@ -79,10 +78,13 @@ class WorkerController extends Controller
         if(Auth::user()->role != 1){
             return redirect('worker');
         };
-
-        return view('worker.update', [
-            'worker' => Worker::where('id', '=', $id)->first(),
-        ]);
+        $worker = Worker::where('id', '=', $id)->first();
+        if($worker){
+            return view('worker.update', [
+                'worker' => $worker,
+            ]);
+        }
+        else return redirect('worker');
     }
     public function update(Request $request)
     { 
@@ -166,64 +168,26 @@ class WorkerController extends Controller
     
     public function detail($id_number, Request $request)
     {
-        return view('worker.detail',[
-            'worker' => Worker::where('id_number', '=', $id_number)->first(),
-        ]);
+        $worker = Worker::where('id_number', '=', $id_number)->first();
+        if($worker){
+            return view('worker.detail', [
+                'worker' => $worker,
+                'competencies' => WorkerCompetency::where('worker_id', '=', $worker->id)->get(),
+            ]);
+        }
+        else return redirect('worker');
     }
-    
-    public function createCompetencyView($id_number)
+    public function verify($verify, $id,  Request $request)
     {
-        if(Auth::user()->role != 1){
+        if(Auth::user()->role != 2){
             return redirect('worker');
         };
-
-        return view('worker.competency.create',[
-            'worker' => Worker::where('id_number', '=', $id_number)->first(),
-        ]);
+        $worker = Worker::where('id', '=', $id)->first();
+        if($worker){
+            if($verify == 'verify') $worker->verified_sshe = '1';
+            if($verify == 'unverify') $worker->verified_sshe = '0';
+            $worker->save();
+        }
+        return redirect(route('worker.detail', ['id_number' => $worker->id_number]));
     }
-    public function createCompetency(Request $request)
-    {         
-        $validated = $request->validate([
-            'image' => 'required',
-            'id_number' => 'required|unique:workers|max:255',
-            'name' => 'required',
-            'active_status' => 'required',
-            'gender' => 'required',
-            'phone' => 'required',
-            'education' => 'required',
-            'address' => 'required',
-            'employee_status' => 'required',
-            'departement' => 'required',
-            'ssw_status' => 'required',
-            'mcu_note' => 'required',
-            'supervisor_name' => 'required',
-            'starting_date_work' => 'required',
-            'end_date_work' => 'required',
-        ]);
-
-        $destinationPath = 'upload/image';
-        $imageName = $request->id_number.'.'.$request->image->extension();
-        $request->image->move(public_path($destinationPath), $imageName);
-        $status = Worker::insert([
-            'photo' => $imageName,
-            'id_number' => $request->id_number,
-            'name' => $request->name,
-            'active_status' => $request->active_status,
-            'gender' => $request->gender,
-            'phone' => $request->phone,
-            'education' => $request->education,
-            'address' => $request->address,
-            'employee_status' => $request->employee_status,
-            'departement' => $request->departement,
-            'ssw_status' => $request->ssw_status,
-            'mcu_note' => $request->mcu_note,
-            'supervisor_name' => $request->supervisor_name,
-            'starting_date_work' => $request->starting_date_work,
-            'end_date_work' => $request->end_date_work,
-            'created_at' => date('Y-m-d H:i:s'), 
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
-        return redirect('worker');
-    }
-
 }

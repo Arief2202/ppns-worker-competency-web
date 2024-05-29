@@ -188,8 +188,11 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-between">
-                          <a href="/worker/delete/{{ $worker->id }}" class="btn btn-danger">Delete</a>
-                          <button type="submit" class="btn btn-primary">Submit</button>
+                          <a href="{{ route('worker.delete', ['id'=>$worker->id]) }}" class="btn btn-danger">Delete</a>                          
+                          <div>
+                            <a href="{{ route('worker.detail', ['id_number'=>$worker->id_number]) }}" class="btn btn-secondary me-3">Cancel</a>
+                            <button type="submit" class="btn btn-success">Update</button>
+                          </div>
                         </div>
                       </form>
                 </div>

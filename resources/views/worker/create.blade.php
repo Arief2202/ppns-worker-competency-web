@@ -65,7 +65,7 @@
                                       <label class="form-check-label" for="input4_1">Male</label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                      <input checked class="form-check-input" type="radio" name="gender" id="input4_2" value="Female">
+                                      <input class="form-check-input" type="radio" name="gender" id="input4_2" value="Female">
                                       <label class="form-check-label" for="input4_2">Female</label>
                                     </div>
                                 </div>
@@ -177,7 +177,10 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <div class="d-flex justify-content-end">
+                          <a href="{{ route('worker'); }}" class="btn btn-secondary me-3">Cancel</a>
+                          <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
                       </form>
                 </div>
             </div>

@@ -81,9 +81,11 @@
                                 
                                 <div class="input-group-sm mb-2 d-flex justify-content-end">
                                     @if(Auth::user()->role == 1)
-                                        <a href="/worker/update/{{ $worker->id }}" class="btn btn-warning">Update</a>
+                                        <a href="/worker/update/{{ $worker->id }}" class="btn btn-primary w-100">Update Data</a>
                                     @elseif(Auth::user()->role == 2)
-                                        <button class="btn btn-danger">Unverify</button>
+                                        @if($worker->verified_sshe == '1') <a href="{{ route('worker.verify', ['verify'=>'unverify', 'id' => $worker->id]) }}" class="btn btn-danger w-100">Unverify</a>
+                                        @elseif($worker->verified_sshe == '0') <a href="{{ route('worker.verify', ['verify'=>'verify', 'id' => $worker->id]) }}"class="btn btn-primary w-100">Verify</a>
+                                        @endif
                                     @endif
                                 </div>
                             </div>
@@ -94,7 +96,7 @@
                     <div class="ps-3 pe-3 pb-3">
                         @if(Auth::user()->role == 1)
                         <div class="d-flex justify-content-end mb-2">
-                            <a class="btn btn-primary" href="{{ route('worker.competency.create', ['id_number'=>$worker->id_number]) }}">Add Competency</a>
+                            <a class="btn btn-primary" href="{{ route('worker.competency.create', ['user_id'=>$worker->id]) }}">Add Competency</a>
                         </div>
                         @endif
                         <table id="myTable" class="display">
@@ -112,29 +114,37 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @for($i=0; $i<=5; $i++)
+                                @foreach($competencies as $i=>$competency)
                                 <tr>
                                     <td>{{ $i+1 }}</td>
-                                    <td>Dummy</td>
-                                    <td>Dummy</td>
-                                    <td>{{ date('Y-m-d H:i:s') }}</td>
-                                    <td>{{ date('Y-m-d H:i:s') }}</td>
-                                    <td>{{ $i+1 }}</td>
-                                    <td>Waiting Update</td>
+                                    <td>{{ $competency->competency()->competency_name }}</td>
+                                    <td>{{ $competency->certification_institute }}</td>
+                                    <td>{{ date('Y-m-d', strtotime($competency->effective_date)) }}</td>
+                                    <td>{{ date('Y-m-d', strtotime($competency->expiration_date)) }}</td>
+                                    <td>{{ $competency->dayLeft() }}</td>
+                                    <td>{{ $competency->update_status }}</td>
                                     <td>
-                                        <div class="alert alert-danger" role="alert">
-                                            Unverified
-                                        </div>
+                                        @if($competency->verification_status == '0')
+                                            <div class="alert alert-danger" role="alert">
+                                                Unverified
+                                            </div>
+                                        @elseif($competency->verification_status == '1')
+                                            <div class="alert alert-success" role="alert">
+                                                Verified
+                                            </div>
+                                        @endif
                                     </td>
                                     <td>                                        
                                         @if(Auth::user()->role == 1)
-                                            <button class="btn btn-secondary">Update</button>
+                                            <a href="{{ route('worker.competency.update', ['id' => $competency->id]); }}" class="btn btn-primary">Update</a>
                                         @elseif(Auth::user()->role == 2)
-                                            <button class="btn btn-danger">Unverify</button>
+                                            @if($competency->verification_status == '1') <a href="{{ route('worker.competency.verify', ['verify'=>'unverify', 'id' => $competency->id]) }}" class="btn btn-danger">Unverify</a>
+                                            @elseif($competency->verification_status == '0') <a href="{{ route('worker.competency.verify', ['verify'=>'verify', 'id' => $competency->id]) }}"class="btn btn-warning">Verify</a>
+                                            @endif
                                         @endif                                    
                                     </td>
                                 </tr>
-                                @endfor
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
