@@ -11,6 +11,9 @@ use App\Models\Competency;
 use App\Models\Worker;
 use App\Models\User;
 
+use App\Exports\ReportExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 class WorkerCompetencyController extends Controller
 {
     
@@ -150,5 +153,8 @@ class WorkerCompetencyController extends Controller
         return view('report', [
             'workerCompetency' => WorkerCompetency::all(),
         ]);
+    }
+    public function report_export(){
+        return Excel::download(new ReportExport, 'Report.xlsx');
     }
 }

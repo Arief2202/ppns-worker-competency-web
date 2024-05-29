@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/worker/competency/{verify}/{id}', 'verify')->name('worker.competency.verify');
         
         Route::get('/report', 'report')->name('report');
+        Route::get('/report/export', 'report_export')->name('report.export');
     });
     
     Route::controller(CompetencyController::class)->group(function () {        
