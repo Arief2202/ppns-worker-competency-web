@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Update Competency') }}
+            {{ __('Create Schedule') }}
         </h2>
     </x-slot>
 
@@ -9,12 +9,28 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-dark2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-
-                    <form method="POST" action="{{ route('competency.update.post') }}">@csrf
-                      <input type="hidden" name="id" value="{{ $competency->id }}">                            
+                    <form method="POST" action="{{ route('competency.create.post') }}">@csrf                        
                         <div class="mb-3">
-                          <label for="input4" class="form-label">Competency Name</label>
-                          <input type="text " class="form-control @error('competency_name') is-invalid @enderror" id="input4" name="competency_name" value="{{ old('competency_name', $competency->competency_name) }}">
+                          <label for="input2" class="form-label">Competency Name</label>
+                          <input type="text" class="form-control @error('competency_name') is-invalid @enderror" id="input2" name="competency_name" value="{{ old('competency_name') }}">
+                          @error('competency_name')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                          @enderror
+                        </div>
+                        <div class="mb-3">
+                          <label for="input2" class="form-label">Competency Name</label>
+                          <input type="text" class="form-control @error('competency_name') is-invalid @enderror" id="input2" name="competency_name" value="{{ old('competency_name') }}">
+                          @error('competency_name')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                          @enderror
+                        </div>
+                        <div class="mb-3">
+                          <label for="input2" class="form-label">Competency Name</label>
+                          <input type="text" class="form-control @error('competency_name') is-invalid @enderror" id="input2" name="competency_name" value="{{ old('competency_name') }}">
                           @error('competency_name')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -22,16 +38,11 @@
                           @enderror
                         </div>
 
-                        
-                        <div class="d-flex justify-content-between">
-                          <a href="{{ route('competency.delete', ['id'=>$competency->id]) }}" class="btn btn-danger">Delete</a>
-                          <div>
-                            <a href="{{ route('competency') }}" class="btn btn-secondary me-3">Cancel</a>
-                            <button type="submit" class="btn btn-success">Update</button>
-                          </div>
+                        <div class="d-flex justify-content-end">
+                            <a href="{{ route('schedule.manage') }}" class="btn btn-secondary me-3">Cancel</a>
+                            <button type="submit" class="btn btn-success">Submit</button>
                         </div>
                       </form>
-
                 </div>
             </div>
         </div>

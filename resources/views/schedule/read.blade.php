@@ -9,9 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-dark2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    @if(Auth::user()->role == 1)
+                    @if(Auth::user()->role == 3)
                     <div class="d-flex justify-content-end">
-                        <button class="btn btn-primary">Add Schedule</button>
+                        <a href="{{ route('schedule.manage') }}" class="btn btn-primary">Manage Schedule</a>
                     </div>
                     @endif
                     <div class="p-3">
