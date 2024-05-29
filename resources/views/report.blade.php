@@ -10,7 +10,7 @@
             <div class="bg-dark2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div class="d-flex justify-content-end">
-                        <button class="btn btn-primary">Export Excel</button>
+                        <a href="/report/export" class="btn btn-primary">Export Excel</a>
                     </div>
                     <div class="p-3">
                         <table id="myTable" class="display">
