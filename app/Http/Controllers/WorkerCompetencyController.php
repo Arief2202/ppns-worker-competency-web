@@ -144,4 +144,11 @@ class WorkerCompetencyController extends Controller
         }
         return redirect('worker');
     }
+    
+    public function report()
+    {
+        return view('report', [
+            'workerCompetency' => WorkerCompetency::all(),
+        ]);
+    }
 }

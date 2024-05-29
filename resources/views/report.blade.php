@@ -9,31 +9,36 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-dark2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-primary">Export Excel</button>
+                    </div>
                     <div class="p-3">
-
                         <table id="myTable" class="display">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>ID Number</th>
                                     <th>Name</th>
-                                    <th>Gender</th>
-                                    <th>Active Status</th>
-                                    <th>Detail</th>
+                                    <th>ID Number</th>
+                                    <th>Employee Status</th>
+                                    <th>Competency</th>
+                                    <th>Expired</th>
+                                    <th>Dayleft</th>
+                                    <th>Update Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @for($i=1;$i<=30;$i++)
+                                @foreach($workerCompetency as $i=>$workc)
                                 <tr>
-                                    <td>{{ $i }}</td>
-                                    <td>{{ rand(1000,10000) }}</td>
-                                    <td>{{ fake()->name() }}</td>
-                                    <td>{{ rand(0,1) ? "Male" : "Female"}}</td>
-                                    <td>Active</td>
-                                    <td><button class="btn btn-secondary">Detail</button></td>
+                                    <td>{{ $i+1 }}</td>
+                                    <td>{{ $workc->worker()->name }}</td>
+                                    <td>{{ $workc->worker()->id_number }}</td>
+                                    <td>{{ $workc->worker()->employee_status }}</td>
+                                    <td>{{ $workc->competency()->competency_name}}</td>
+                                    <td>{{ $workc->expiration_date }}</td>
+                                    <td>{{ $workc->dayLeft() }}</td>
+                                    <td>{{ $workc->update_status }}</td>
                                 </tr>
-                                @endfor
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

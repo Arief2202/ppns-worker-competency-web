@@ -12,6 +12,12 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/profile', 'edit')->name('profile.edit');
+        Route::patch('/profile', 'update')->name('profile.update');
+        Route::delete('/profile', 'destroy')->name('profile.destroy');
+    });
+
     Route::controller(WorkerController::class)->group(function () {
         Route::get('/worker/create', 'createView')->name('worker.create');
         Route::post('/worker/create', 'create')->name('worker.create.post');
@@ -36,30 +42,32 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/worker/competency/delete/{id}', 'delete')->name('worker.competency.delete');
         Route::get('/worker/competency/{verify}/{id}', 'verify')->name('worker.competency.verify');
+        
+        Route::get('/report', 'report')->name('report');
     });
+    
+    Route::controller(CompetencyController::class)->group(function () {        
+        Route::get('/competency/create', 'createView')->name('competency.create');
+        Route::post('/competency/create', 'create')->name('competency.create.post');
+        
+        Route::get('/competency', 'read')->name('competency');
 
+        Route::get('/competency/update/{id}', 'updateView')->name('competency.update');
+        Route::post('/competency/update', 'update')->name('competency.update.post');
 
+        Route::get('/competency/delete/{id}', 'delete')->name('competency.delete');
+    });
+    
+        
 });
-
-Route::get('/competency', function () {
-    return view('competency');
-})->middleware(['auth', 'verified'])->name('competency');
-
-Route::get('/report', function () {
-    return view('report');
-})->middleware(['auth', 'verified'])->name('report');
 
 Route::get('/schedule', function () {
     return view('schedule');
 })->middleware(['auth', 'verified'])->name('schedule');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
 require __DIR__.'/auth.php';
