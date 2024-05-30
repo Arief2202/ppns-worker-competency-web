@@ -7,122 +7,85 @@ use App\Http\Requests\UpdateScheduleTimesRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\Schedule;
+use App\Models\ScheduleWorkers;
 use App\Models\ScheduleTimes;
 
 class ScheduleTimesController extends Controller
 {
-    public function createView($worker_id)
+
+    public function createView($id)
     {
-        if(Auth::user()->role != 1){
-            return redirect('worker');
+        if(Auth::user()->role != 3){
+            return redirect('schedule');
         };
-        $worker = Worker::where('id', '=', $worker_id)->first();
-        $competency = [];
-        
-        foreach(Competency::all() as $c){
-            $WorkerCompetency = WorkerCompetency::where('worker_id', '=', $worker->id)->where('competency_id', '=', $c->id)->first();
-            if(!$WorkerCompetency) $competency[] = $c;
-        }
-        $competency = collect($competency);
-        
-        if($worker){
-            return view('worker.competency.create',[
-                'worker' => $worker,
-                'competencies' => $competency
-            ]);
-        }
+        return view('schedule.time.create', [
+            'id' => $id
+        ]);
     }
     public function create(Request $request)
-    {         
-        if(Auth::user()->role != 1){
-            return redirect('worker');
+    { 
+        if(Auth::user()->role != 3){
+            return redirect('schedule');
         };
-
         $validated = $request->validate([
-            'worker_id' => 'required',
-            'competency_id' => 'required',
-            'competency' => 'required',
-            'certification_institute' => 'required',
-            'effective_date' => 'required',
-            'expiration_date' => 'required',
-            'update_status' => 'required',
+            'date' => 'required',
+            'start_time' => 'required',
+            'end_time' => 'required',
         ]);
-        $status = WorkerCompetency::insert([
-            'worker_id' => $request->worker_id,
-            'competency_id' => $request->competency_id,
-            'certification_institute' => $request->certification_institute,
-            'effective_date' => $request->effective_date,
-            'expiration_date' => $request->expiration_date,
-            'update_status' => $request->update_status,
-            'verification_status' => '0',
+        $status = ScheduleTimes::insert([
+            'schedule_id' => $request->schedule_id,
+            'date' => $request->date,
+            'start_time' => $request->date." ".$request->start_time.":00",
+            'end_time' => $request->date." ".$request->end_time.":00",
             'created_at' => date('Y-m-d H:i:s'), 
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
-        return redirect(route('worker.detail', ['id_number' => Worker::where('id', '=', $request->worker_id)->first()->id_number]));
+        return redirect(route('schedule.detail', ['id' => $request->schedule_id]));
     }
+    
     public function updateView($id)
     {
-        if(Auth::user()->role != 1){
-            return redirect('worker');
+        if(Auth::user()->role != 3){
+            return redirect('schedule');
         };
-        $workerCompetency = WorkerCompetency::where('id', '=', $id)->first();
-        
-        $competency = [];
-        
-        foreach(Competency::all() as $c){
-            $WorkerCompetency = WorkerCompetency::where('worker_id', '=', $workerCompetency->worker()->id)->where('competency_id', '=', $c->id)->where('id', '!=', $workerCompetency->id)->first();
-            if(!$WorkerCompetency) $competency[] = $c;
-        }
-        $competency = collect($competency);
-        
-
-        if($workerCompetency){
-            return view('worker.competency.update',[
-                'workerCompetency' => $workerCompetency,
-                'competencies' => $competency,
+        $schedule = ScheduleTimes::where('id', '=', $id)->first();
+        if($schedule){
+            return view('schedule.time.update', [
+                'scheduleTime' => $schedule,
             ]);
         }
-        return redirect('worker');
-
+        else return redirect(route('schedule.manage'));
     }
-    
     public function update(Request $request)
-    {         
-        if(Auth::user()->role != 1){
-            return redirect('worker');
+    { 
+        if(Auth::user()->role != 3){
+            return redirect('schedule');
         };
-
+        $scheduleTime = ScheduleTimes::where('id', '=', $request->id)->first();
         $validated = $request->validate([
-            'worker_id' => 'required',
-            'competency_id' => 'required',
-            'competency' => 'required',
-            'certification_institute' => 'required',
-            'effective_date' => 'required',
-            'expiration_date' => 'required',
-            'update_status' => 'required',
+            'date' => 'required',
+            'start_time' => 'required',
+            'end_time' => 'required',
         ]);
-        
-        $workerCompetency = WorkerCompetency::where('id', '=', $request->id)->first();
-        $workerCompetency->worker_id = $request->worker_id;
-        $workerCompetency->competency_id = $request->competency_id;
-        $workerCompetency->certification_institute = $request->certification_institute;
-        $workerCompetency->effective_date = $request->effective_date;
-        $workerCompetency->expiration_date = $request->expiration_date;
-        $workerCompetency->update_status = $request->update_status;
-        $workerCompetency->verification_status = '0';
-        $workerCompetency->updated_at = date('Y-m-d H:i:s');
-        $workerCompetency->save();
-        return redirect(route('worker.detail', ['id_number' => Worker::where('id', '=', $request->worker_id)->first()->id_number]));
+        $scheduleTime->date = $request->date;
+        $scheduleTime->start_time = $request->date." ".$request->start_time.":00";
+        $scheduleTime->end_time = $request->date." ".$request->end_time.":00";
+        $scheduleTime->updated_at = date('Y-m-d H:i:s');
+        $scheduleTime->save();
+        return redirect(route('schedule.detail', ['id'=>$scheduleTime->schedule_id]));
     }
-    
+
     public function delete($id)
     {
-        if(Auth::user()->role != 1){
-            return redirect('worker');
+        if(Auth::user()->role != 3){
+            return redirect('schedule');
         };
-        $workerCompetency = WorkerCompetency::where('id', '=', $id)->first();
-        $worker = $workerCompetency->worker();
-        $workerCompetency->delete();
-        return redirect(route('worker.detail', ['id_number' => $worker->id_number]));
+
+        $scheduleTime = ScheduleTimes::where('id', '=', $id)->first();
+        $id_schedule = $scheduleTime->schedule_id;
+        $scheduleTime->delete();
+
+        return redirect(route('schedule.detail', ['id' => $id_schedule]));
     }
 }

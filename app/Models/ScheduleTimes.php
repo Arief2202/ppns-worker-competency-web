@@ -11,6 +11,6 @@ class ScheduleTimes extends Model
     
     public function schedule()
     {
-        return Schedule::where('id', $this->schedule_id)->get();
+        return Schedule::where('id', $this->schedule_id)->first();
     }
 }

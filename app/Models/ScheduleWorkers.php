@@ -11,14 +11,18 @@ class ScheduleWorkers extends Model
     
     public function schedule()
     {
-        return Schedule::where('id', $this->schedule_id)->get();
+        return Schedule::where('id', $this->schedule_id)->first();
     }
     public function worker()
     {
-        return Worker::where('id', $this->worker_id)->get();
+        return Worker::where('id', $this->worker_id)->first();
     }
     public function competency()
     {
-        return Competency::where('id', $this->competency_id)->get();
+        return Competency::where('id', $this->competency_id)->first();
+    }
+    public function times()
+    {
+        return ScheduleTimes::where('schedule_id', $this->schedule_id)->get();
     }
 }

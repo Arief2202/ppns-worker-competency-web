@@ -10,7 +10,7 @@ class Schedule extends Model
     use HasFactory;
 
     
-    public function workers()
+    public function schedule_workers()
     {
         return ScheduleWorkers::where('schedule_id', $this->id)->get();
     }

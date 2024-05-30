@@ -9,38 +9,42 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-dark2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form method="POST" action="{{ route('schedule.create.post') }}">@csrf                        
+                    <form method="POST" action="{{ route('schedule.time.update.post') }}">@csrf      
+                        <input type="hidden" name="id" value="{{ $scheduleTime->id }}">                  
                         <div class="mb-3">
-                          <label for="input1" class="form-label">Working Activity</label>
-                          <input type="text" class="form-control @error('working_activity') is-invalid @enderror" id="input1" name="working_activity" value="{{ old('working_activity') }}">
-                          @error('working_activity')
+                          <label for="input1" class="form-label">Date</label>
+                          <input type="date" class="form-control @error('date') is-invalid @enderror" id="input1" name="date" value="{{ old('date', date('Y-m-d', strtotime($scheduleTime->date))) }}">
+                          @error('date')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                           @enderror
                         </div>
                         <div class="mb-3">
-                          <label for="input2" class="form-label">Supervisor</label>
-                          <input type="text" class="form-control @error('supervisor') is-invalid @enderror" id="input2" name="supervisor" value="{{ old('supervisor') }}">
-                          @error('supervisor')
+                          <label for="input2" class="form-label">Start Time</label>
+                          <input type="time" class="form-control @error('start_time') is-invalid @enderror" id="input2" name="start_time" value="{{ old('start_time', date('H:i', strtotime($scheduleTime->start_time))) }}">
+                          @error('start_time')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                           @enderror
                         </div>
                         <div class="mb-3">
-                          <label for="input3" class="form-label">Location</label>
-                          <input type="text" class="form-control @error('location') is-invalid @enderror" id="input3" name="location" value="{{ old('location') }}">
-                          @error('location')
+                          <label for="input3" class="form-label">End Time</label>
+                          <input type="time" class="form-control @error('end_time') is-invalid @enderror" id="input3" name="end_time" value="{{ old('end_time', date('H:i', strtotime($scheduleTime->end_time))) }}">
+                          @error('end_time')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
                           @enderror
                         </div>
 
-                        <div class="d-flex justify-content-end">
-                            <a href="{{ route('schedule.manage') }}" class="btn btn-secondary me-3">Cancel</a>
+                        <div class="d-flex justify-content-between">
+                          <a href="{{ route('schedule.time.delete', ['id' => $scheduleTime->id]) }}" class="btn btn-danger">Delete</a>
+                          <div>
+                            <a href="{{ route('schedule.detail', ['id' => $scheduleTime->schedule_id]) }}" class="btn btn-secondary me-3">Cancel</a>
                             <button type="submit" class="btn btn-success">Submit</button>
+                          </div>
                         </div>
                       </form>
                 </div>

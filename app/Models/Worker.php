@@ -13,4 +13,9 @@ class Worker extends Model
     {
         return WorkerCompetency::where('worker_id', $this->id)->get();
     }
+
+    public function jobs()
+    {
+        return ScheduleWorkers::where('worker_id', $this->id)->get();
+    }
 }

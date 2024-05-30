@@ -121,7 +121,26 @@
                                     <td>{{ $competency->certification_institute }}</td>
                                     <td>{{ date('Y-m-d', strtotime($competency->effective_date)) }}</td>
                                     <td>{{ date('Y-m-d', strtotime($competency->expiration_date)) }}</td>
-                                    <td>{{ $competency->dayLeft() }}</td>
+                                    @if($competency->dayLeft() < 30)
+                                    <td>
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ $competency->dayLeft() }}
+                                        </div>
+                                    </td>
+                                    @elseif($competency->dayLeft() < 60)
+                                    <td>
+                                        <div class="alert alert-warning" role="alert">
+                                            {{ $competency->dayLeft() }}
+                                        </div>
+                                    </td>
+                                    @else
+                                    <td>
+                                        <div class="alert alert-success" role="alert">
+                                            {{ $competency->dayLeft() }}
+                                        </div>
+                                    </td>
+                                    @endif
+                                    
                                     <td>{{ $competency->update_status }}</td>
                                     <td>
                                         @if($competency->verification_status == '0')

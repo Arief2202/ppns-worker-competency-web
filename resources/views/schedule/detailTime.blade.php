@@ -30,15 +30,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($schedules as $i=>$schedule)
+                                @foreach($scheduleTimes as $i=>$scheduleTime)
                                 <tr>
                                     <td>{{ $i+1 }}</td>
-                                    <td>{{ $schedule->working_activity }}</td>
-                                    <td>{{ $schedule->supervisor }}</td>
-                                    <td>{{ $schedule->location }}</td>
-                                    <td>{{ $schedule->times()->count() }} day</td>
-                                    <td>{{ $schedule->schedule_workers()->count() }} people</td>
-                                    <td><a href="{{ route('schedule.detail', ['id' => $schedule->id]) }}" class="btn btn-secondary">Detail</a></td>
+                                    <td>{{ $scheduleTime->schedule()->working_activity }}</td>
+                                    <td>{{ $scheduleTime->schedule()->supervisor }}</td>
+                                    <td>{{ $scheduleTime->schedule()->location }}</td>
+                                    <td>{{ $scheduleTime->schedule()->times()->count() }} day</td>
+                                    <td>{{ $scheduleTime->schedule()->schedule_workers()->count() }} people</td>
+                                    <td><a href="{{ route('schedule.detail', ['id' => $scheduleTime->schedule()->id]) }}" class="btn btn-secondary">Detail</a></td>
                                 </tr>
                                 @endforeach
                                 {{-- @foreach($workers as $i=>$worker)

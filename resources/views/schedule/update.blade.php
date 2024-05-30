@@ -9,10 +9,11 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-dark2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form method="POST" action="{{ route('schedule.create.post') }}">@csrf                        
+                    <form method="POST" action="{{ route('schedule.update.post') }}">@csrf  
+                      <input type="hidden" name="id" value="{{$schedule->id}}">                      
                         <div class="mb-3">
                           <label for="input1" class="form-label">Working Activity</label>
-                          <input type="text" class="form-control @error('working_activity') is-invalid @enderror" id="input1" name="working_activity" value="{{ old('working_activity') }}">
+                          <input type="text" class="form-control @error('working_activity') is-invalid @enderror" id="input1" name="working_activity" value="{{ old('working_activity', $schedule->working_activity) }}">
                           @error('working_activity')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -21,7 +22,7 @@
                         </div>
                         <div class="mb-3">
                           <label for="input2" class="form-label">Supervisor</label>
-                          <input type="text" class="form-control @error('supervisor') is-invalid @enderror" id="input2" name="supervisor" value="{{ old('supervisor') }}">
+                          <input type="text" class="form-control @error('supervisor') is-invalid @enderror" id="input2" name="supervisor" value="{{ old('supervisor', $schedule->supervisor) }}">
                           @error('supervisor')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -30,7 +31,7 @@
                         </div>
                         <div class="mb-3">
                           <label for="input3" class="form-label">Location</label>
-                          <input type="text" class="form-control @error('location') is-invalid @enderror" id="input3" name="location" value="{{ old('location') }}">
+                          <input type="text" class="form-control @error('location') is-invalid @enderror" id="input3" name="location" value="{{ old('location', $schedule->location) }}">
                           @error('location')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -38,9 +39,13 @@
                           @enderror
                         </div>
 
-                        <div class="d-flex justify-content-end">
-                            <a href="{{ route('schedule.manage') }}" class="btn btn-secondary me-3">Cancel</a>
+                        <div class="d-flex justify-content-between">
+                          <a href="{{ route('schedule.delete', ['id' => $schedule->id]) }}" class="btn btn-danger">Delete</a>
+
+                          <div>
+                            <a href="{{ route('schedule.detail', ['id' => $schedule->id]) }}" class="btn btn-secondary me-3">Cancel</a>
                             <button type="submit" class="btn btn-success">Submit</button>
+                          </div>
                         </div>
                       </form>
                 </div>

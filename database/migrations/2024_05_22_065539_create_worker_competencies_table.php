@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('effective_date')->useCurrent();
             $table->timestamp('expiration_date')->useCurrent();
             $table->string('update_status');
-            $table->string('verification_status');
+            $table->string('verification_status')->default('0');
             $table->timestamps();
         });
     }

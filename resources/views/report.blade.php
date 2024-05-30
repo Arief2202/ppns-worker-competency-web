@@ -35,7 +35,25 @@
                                     <td>{{ $workc->worker()->employee_status }}</td>
                                     <td>{{ $workc->competency()->competency_name}}</td>
                                     <td>{{ $workc->expiration_date }}</td>
-                                    <td>{{ $workc->dayLeft() }}</td>
+                                    @if($workc->dayLeft() < 30)
+                                    <td>
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ $workc->dayLeft() }}
+                                        </div>
+                                    </td>
+                                    @elseif($workc->dayLeft() < 60)
+                                    <td>
+                                        <div class="alert alert-warning" role="alert">
+                                            {{ $workc->dayLeft() }}
+                                        </div>
+                                    </td>
+                                    @else
+                                    <td>
+                                        <div class="alert alert-success" role="alert">
+                                            {{ $workc->dayLeft() }}
+                                        </div>
+                                    </td>
+                                    @endif
                                     <td>{{ $workc->update_status }}</td>
                                 </tr>
                                 @endforeach

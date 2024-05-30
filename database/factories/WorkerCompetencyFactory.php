@@ -16,8 +16,16 @@ class WorkerCompetencyFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            //
+        return [            
+            'worker_id' => rand(1, 200),
+            'competency_id' => rand(1, 82),
+            'certification_institute' => '-',
+            'effective_date' => date('Y-m-d H:i:s'), 
+            'expiration_date' => date('Y-m-d H:i:s'),
+            'update_status' => '-',
+            'created_at' => date('Y-m-d H:i:s'), 
+            'updated_at' => date('Y-m-d H:i:s'),
+            'verification_status' => '1',
         ];
     }
 }

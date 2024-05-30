@@ -42,6 +42,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(CompetencySeeder::class);
+        $this->call(WorkerSeeder::class);
+        $this->call(WorkerCompetencySeeder::class);
 
 
     }

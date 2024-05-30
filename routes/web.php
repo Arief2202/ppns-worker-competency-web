@@ -68,6 +68,9 @@ Route::middleware('auth')->group(function () {
         
         Route::get('/schedule', 'read')->name('schedule');
         Route::get('/schedule/manage', 'manage')->name('schedule.manage');
+        Route::get('/schedule/detail/{id}', 'detail')->name('schedule.detail');
+
+        Route::get('/schedule/select', 'detailTime')->name('schedule.detail.time');
 
         Route::get('/schedule/update/{id}', 'updateView')->name('schedule.update');
         Route::post('/schedule/update', 'update')->name('schedule.update.post');
@@ -76,7 +79,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(ScheduleTimesController::class)->group(function () {        
-        Route::get('/schedule/time/create', 'createView')->name('schedule.time.create');
+        Route::get('/schedule/time/create/{schedule_id}', 'createView')->name('schedule.time.create');
         Route::post('/schedule/time/create', 'create')->name('schedule.time.create.post');
 
         Route::get('/schedule/time/update/{id}', 'updateView')->name('schedule.time.update');
@@ -85,7 +88,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/schedule/time/delete/{id}', 'delete')->name('schedule.time.delete');
     });
     Route::controller(ScheduleWorkersController::class)->group(function () {        
-        Route::get('/schedule/worker/create', 'createView')->name('schedule.worker.create');
+        Route::get('/schedule/worker/filter', 'filter')->name('schedule.worker.filter');
+        Route::get('/schedule/worker/create/{schedule_id}', 'createView')->name('schedule.worker.create');
         Route::post('/schedule/worker/create', 'create')->name('schedule.worker.create.post');
 
         Route::get('/schedule/worker/update/{id}', 'updateView')->name('schedule.worker.update');

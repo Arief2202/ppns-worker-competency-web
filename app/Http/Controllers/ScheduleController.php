@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Schedule;
 use App\Models\ScheduleWorkers;
 use App\Models\ScheduleTimes;
+use DateTime;
 
 class ScheduleController extends Controller
 {
@@ -28,52 +29,41 @@ class ScheduleController extends Controller
         };
         
         $validated = $request->validate([
-            'image' => 'required',
-            'id_number' => 'required|unique:workers|max:255',
-            'name' => 'required',
-            'active_status' => 'required',
-            'gender' => 'required',
-            'phone' => 'required',
-            'education' => 'required',
-            'address' => 'required',
-            'employee_status' => 'required',
-            'departement' => 'required',
-            'ssw_status' => 'required',
-            'mcu_note' => 'required',
-            'supervisor_name' => 'required',
-            'starting_date_work' => 'required',
-            'end_date_work' => 'required',
+            'working_activity' => 'required',
+            'supervisor' => 'required',
+            'location' => 'required',
         ]);
-
-        $destinationPath = 'upload/image';
-        $imageName = $request->id_number.'.'.$request->image->extension();
-        $request->image->move(public_path($destinationPath), $imageName);
-        $status = Worker::insert([
-            'photo' => $imageName,
-            'id_number' => $request->id_number,
-            'name' => $request->name,
-            'active_status' => $request->active_status,
-            'gender' => $request->gender,
-            'phone' => $request->phone,
-            'education' => $request->education,
-            'address' => $request->address,
-            'employee_status' => $request->employee_status,
-            'departement' => $request->departement,
-            'ssw_status' => $request->ssw_status,
-            'mcu_note' => $request->mcu_note,
-            'supervisor_name' => $request->supervisor_name,
-            'starting_date_work' => $request->starting_date_work,
-            'end_date_work' => $request->end_date_work,
+        $status = Schedule::insert([
+            'working_activity' => $request->working_activity,
+            'supervisor' => $request->supervisor,
+            'location' => $request->location,
             'created_at' => date('Y-m-d H:i:s'), 
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
-        return redirect('schedule');
+        return redirect(route('schedule.manage'));
     }
     
-    public function read()
+    public function read(Request $request)
     {
-        return view('schedule.read',[
+        if(!$request->month) return redirect(route('schedule')."?month=".date('Y-m'));
+        $selectedDate = new DateTime($request->month);
+        $dayCount = $selectedDate->format('t');
+        $count = [[]];
+        for($a=0;$a<=$dayCount;$a++){
+            for($b=0;$b<9;$b++){
+                $dateTime = $request->month.($a+1<10?'-0':'-').($a+1)." ".($b+8<10?"0":"").($b+8).":00:00";
+                $ScheduleDate = ScheduleTimes::where('date', date('Y-m-d 00:00:00', strtoTime($dateTime)))->get();
+                $ScheduleByTimeStart = $ScheduleDate->where('start_time', '<=', $dateTime);
+                $ScheduleByTimeEnd = $ScheduleByTimeStart->where('end_time', '>=', "$dateTime");
+
+                $count[$a][$b] = $ScheduleByTimeEnd->count();
+            }
+        }
+        return view('schedule.read', [
             'schedules' => Schedule::all(),
+            'dayCount' => $dayCount,
+            'request' => $request,
+            'count' => $count,
         ]);
     }
 
@@ -87,87 +77,48 @@ class ScheduleController extends Controller
         ]);
     }
 
+    public function detailTime(Request $request)
+    {
+        $ScheduleDate = ScheduleTimes::where('date', date('Y-m-d 00:00:00', strtoTime($request->dateTime)))->get();
+        $ScheduleByTimeStart = $ScheduleDate->where('start_time', '<=', $request->dateTime);
+        $ScheduleByTimeEnd = $ScheduleByTimeStart->where('end_time', '>=', $request->dateTime);
+        return view('schedule.detailTime',[
+            'scheduleTimes' => $ScheduleByTimeEnd,
+        ]);
+    }
+
     
     public function updateView($id)
     {
         if(Auth::user()->role != 3){
             return redirect('schedule');
         };
-        $worker = Worker::where('id', '=', $id)->first();
-        if($worker){
-            return view('worker.update', [
-                'worker' => $worker,
+        $schedule = Schedule::where('id', '=', $id)->first();
+        if($schedule){
+            return view('schedule.update', [
+                'schedule' => $schedule,
             ]);
         }
-        else return redirect('worker');
+        else return redirect(route('schedule.manage'));
     }
     public function update(Request $request)
     { 
         if(Auth::user()->role != 3){
             return redirect('schedule');
         };
-        $worker = Worker::where('id', '=', $request->id)->first();
+        $schedule = Schedule::where('id', '=', $request->id)->first();
 
-        if($worker->id_number != $request->id_number){            
-            $validated = $request->validate([
-                'id_number' => 'required|unique:workers|max:255',
-                'name' => 'required',
-                'active_status' => 'required',
-                'gender' => 'required',
-                'phone' => 'required',
-                'education' => 'required',
-                'address' => 'required',
-                'employee_status' => 'required',
-                'departement' => 'required',
-                'ssw_status' => 'required',
-                'mcu_note' => 'required',
-                'supervisor_name' => 'required',
-                'starting_date_work' => 'required',
-                'end_date_work' => 'required',
-            ]);
-        }
-        else{
-            $validated = $request->validate([
-                'id_number' => 'required',
-                'name' => 'required',
-                'active_status' => 'required',
-                'gender' => 'required',
-                'phone' => 'required',
-                'education' => 'required',
-                'address' => 'required',
-                'employee_status' => 'required',
-                'departement' => 'required',
-                'ssw_status' => 'required',
-                'mcu_note' => 'required',
-                'supervisor_name' => 'required',
-                'starting_date_work' => 'required',
-                'end_date_work' => 'required',
-            ]);
-        }
-        $imageName = $worker->photo;
-        if($request->image){
-            $destinationPath = 'upload/image';
-            $imageName = $request->id_number.'.'.$request->image->extension();
-            $request->image->move(public_path($destinationPath), $imageName);
-        }
-        $worker->photo = $imageName;
-        $worker->id_number = $request->id_number;
-        $worker->name = $request->name;
-        $worker->active_status = $request->active_status;
-        $worker->gender = $request->gender;
-        $worker->phone = $request->phone;
-        $worker->education = $request->education;
-        $worker->address = $request->address;
-        $worker->employee_status = $request->employee_status;
-        $worker->departement = $request->departement;
-        $worker->ssw_status = $request->ssw_status;
-        $worker->mcu_note = $request->mcu_note;
-        $worker->supervisor_name = $request->supervisor_name;
-        $worker->starting_date_work = $request->starting_date_work;
-        $worker->end_date_work = $request->end_date_work;
-        $worker->updated_at = date('Y-m-d H:i:s');
-        $worker->save();
-        return redirect(route('worker.detail', ['id_number'=>$worker->id_number]));
+        $validated = $request->validate([
+            'working_activity' => 'required',
+            'supervisor' => 'required',
+            'location' => 'required',
+        ]);
+        $schedule->working_activity = $request->working_activity;
+        $schedule->supervisor = $request->supervisor;
+        $schedule->location = $request->location;
+        $schedule->updated_at = date('Y-m-d H:i:s');
+        $schedule->save();
+        return redirect(route('schedule.detail', ['id'=>$schedule->id]));
     }
 
     public function delete($id)
@@ -176,21 +127,20 @@ class ScheduleController extends Controller
             return redirect('schedule');
         };
 
-        $worker = Worker::where('id', '=', $id)->first();
-        foreach(WorkerCompetency::where('worker_id', '=', $worker->id)->get() as $competency){
-            $competency->delete();
-        }
-        $worker->delete();
-        return redirect('worker');
+        $schedule = Schedule::where('id', '=', $id)->first();
+        foreach(ScheduleTimes::where('schedule_id', '=', $schedule->id)->get() as $item) $item->delete();
+        foreach(ScheduleWorkers::where('schedule_id', '=', $schedule->id)->get() as $item) $item->delete();
+        $schedule->delete();
+
+        return redirect(route('schedule.manage'));
     }
     
-    public function detail($id_number, Request $request)
+    public function detail($id, Request $request)
     {
-        $worker = Worker::where('id_number', '=', $id_number)->first();
-        if($worker){
-            return view('worker.detail', [
-                'worker' => $worker,
-                'competencies' => WorkerCompetency::where('worker_id', '=', $worker->id)->get(),
+        $schedule = Schedule::where('id', '=', $id)->first();
+        if($schedule){
+            return view('schedule.detail', [
+                'schedule' => $schedule,
             ]);
         }
         else return redirect('worker');
