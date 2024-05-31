@@ -119,6 +119,7 @@
                 url: "{{route('schedule.worker.filter')}}?competency_id="+id+"&schedule_id="+schedule_id,
                success:function(data)
                {
+                  console.log(data);
                   var returnVar = "";
                   for(var i = 0; i < data.count; i++){
                     workerName = data.data[i].name;

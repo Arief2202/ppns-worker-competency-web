@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateScheduleWorkersRequest;
-use App\Http\Requests\StoreScheduleWorkersRequest;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\WorkerCompetency;
 use App\Models\ScheduleWorkers;
-use App\Models\ScheduleTimes;
 use App\Models\Competency;
 use App\Models\Schedule;
 use App\Models\Worker;
@@ -116,55 +112,42 @@ class ScheduleWorkersController extends Controller
             $WorkerCompetency = WorkerCompetency::where('competency_id', '=', $request->competency_id)->get();
             
             $workers = [];
+            $w2= [];
             foreach($WorkerCompetency as $workc){
                 $workers[] =  $workc->worker();
             }
             $workers = collect($workers);
 
-            // $workerJobs = [];
-            // $workerData = [];
-            // $workerJobs = [];
-            // foreach($workers as $key=>$worker){
-            //     $workerData = (object) $worker;
-            //     foreach($worker->jobs() as $key2=>$job){
-            //         $workerJobs[$key2] = (object) $job->times();
-            //     }
-            //     $workerJobs[$key] = collect([
-            //         'worker' => $workerData,
-            //         'jobs' => $workerJobs
-            //     ]);
-            // }
-            // $workerJobs = collect($workerJobs);
-            
             if($request->schedule_id){
                 $schedule = Schedule::where('id', '=', $request->schedule_id)->first();
-                // foreach($schedule->times() as $tim){
-                //     foreach($workerJobs->where('jobs', '!=', null) as $wjob){
-                //         foreach(collect($wjob['jobs']) as $wjob2){
 
-                //                 dd($tim, $wjob2->where('date', '!=', $tim->date));
-                //         }
+                //========================= FILTER UNTUK MENCARI DI JADWAL LAIN DIPASTIKAN TIDAK CRASH JAM DAN TANGGAL =================================
+                foreach($schedule->times() as $nowTimes){
+                    foreach($workers as $worker){
+                        if(count($worker->jobs()) > 0){
+                            foreach($worker->jobs() as $wjobs){
+                                $worker_booked = $wjobs->times()->where('schedule_id', '!=', $request->schedule_id)->where('date', '=', $nowTimes->date)->where('end_time', '>', $nowTimes->start_time);
 
-                //     }
-                // }
-                // foreach($schedule->schedule_workers() as $scwork){
-                //     $WorkerCompetency = $WorkerCompetency->where('worker_id', '!=', $scwork->worker()->id);
-                // }
-                // dd($WorkerCompetency);
-                foreach($WorkerCompetency as $workc){
-                    foreach($schedule->times() as $nowTimes){
-                        foreach($workc->worker()->jobs() as $jobs){
-                            // dd($workers, $nowTimes, $jobs->times());
+                          if($worker_booked->count() > 0) $workers = $workers->where('id', '!=', $worker->id);
+                            }
                         }
                     }
-
                 }
+                //=============================== FILTER UNTUK MENGHILANGKAN NAMA JIKA SUDAH DITAMBAHKAN DI JADWAL =========================================
+                
+                foreach($schedule->schedule_workers() as $schwork) $workers = $workers->where('id', '!=', $schwork->worker()->id);
+                foreach($workers as $worker){
+                    $w2[] = $worker;
+                }
+                $w2 = collect($w2);
+
             }
+
             return response()->json(
                 [
                     'success' => true,
-                    'count' => $workers->count(),
-                    'data' => $workers,
+                    'count' => $w2->count(),
+                    'data' => $w2,
                 ],
                 200
             )->header('Content-Type', 'application/json');
