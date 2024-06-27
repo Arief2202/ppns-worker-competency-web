@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Worker Detail ') }} ({{ $worker->name }})
+            {{ __('Personal Data ') }} ({{ $worker->name }})
         </h2>
     </x-slot>
 
@@ -110,6 +110,7 @@
                                     <th>Day Left</th>
                                     <th>Update Status</th>
                                     <th>Verification Status</th>
+                                    <th>Certificate</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -153,6 +154,8 @@
                                             </div>
                                         @endif
                                     </td>
+                                    <td>                                        
+                                        <a href="/upload/certificate/{{ $competency->certificate }}" class="btn btn-secondary @if(!$competency->certificate || $competency->certificate == '') disabled @endif">Download</a>
                                     <td>                                        
                                         @if(Auth::user()->role == 1)
                                             <a href="{{ route('worker.competency.update', ['id' => $competency->id]); }}" class="btn btn-primary">Update</a>

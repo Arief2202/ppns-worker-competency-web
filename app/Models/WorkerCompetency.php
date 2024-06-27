@@ -10,6 +10,9 @@ class WorkerCompetency extends Model
 {
     use HasFactory;
 
+    protected $guarded = [
+        'id',
+    ];
     public function worker()
     {
         return Worker::where('id', $this->worker_id)->first();

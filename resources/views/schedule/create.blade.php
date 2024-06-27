@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Create Schedule') }}
+            {{ __('Add Work Activities') }}
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-dark2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="bg-dark2 dark:bg-gray-800 shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <form method="POST" action="{{ route('schedule.create.post') }}">@csrf                        
                         <div class="mb-3">
@@ -19,15 +19,33 @@
                             </div>
                           @enderror
                         </div>
+
                         <div class="mb-3">
-                          <label for="input2" class="form-label">Supervisor</label>
-                          <input type="text" class="form-control @error('supervisor') is-invalid @enderror" id="input2" name="supervisor" value="{{ old('supervisor') }}">
+                          <label for="myDropDown" class="form-label">Supervisor</label>
+                          <div class="input-group">
+                            <input type="text" class="form-control @error('supervisor') is-invalid @enderror" aria-label="Text input with dropdown button" value="{{ old('supervisor') }}" id="supervisor_show" disabled>
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width:200px;">
+                              Select Supervisor
+                            </button>
+                            <ul class="dropdown-menu" id="myDropdown">
+                              <div class="pe-2 ps-2"><input type="text" class="form-control" placeholder="Search.." id="myInput" onkeyup="filterFunction()"></div> 
+                              <div style="overflow-y: scroll;max-height: 300px;">
+                                @foreach($workers as $i=>$supervisor)
+                                <li><a class="dropdown-item" onclick="select('{{ $supervisor->name }}', '{{ $supervisor->id }}')">{{ $supervisor->name }}</a></li>
+                                @endforeach
+                              </div>
+                            </ul>
+                          </div>
+                          
+                          <input type="hidden" name="supervisor" id="supervisor" value="{{ old('supervisor') }}" class="@error('supervisor') is-invalid @enderror">
                           @error('supervisor')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
+                          <div class="invalid-feedback">
+                            {{ $message }}
+                          </div>
                           @enderror
-                        </div>
+
+                        </div>     
+
                         <div class="mb-3">
                           <label for="input3" class="form-label">Location</label>
                           <input type="text" class="form-control @error('location') is-invalid @enderror" id="input3" name="location" value="{{ old('location') }}">
@@ -76,9 +94,9 @@
             }
 
             function select(name, id){
-              document.getElementById("competency").value = name;
-              document.getElementById("competency_show").value = name;
-              document.getElementById("competency_id").value = id;
+              document.getElementById("supervisor").value = name;
+              document.getElementById("supervisor_show").value = name;
+              document.getElementById("supervisor_id").value = id;
             }
         </script>
     </x-slot>

@@ -13,6 +13,7 @@ use App\Models\User;
 
 use App\Exports\ReportExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\File; 
 
 class WorkerCompetencyController extends Controller
 {
@@ -52,18 +53,26 @@ class WorkerCompetencyController extends Controller
             'effective_date' => 'required',
             'expiration_date' => 'required',
             'update_status' => 'required',
+            'certificate' => 'required',
         ]);
-        $status = WorkerCompetency::insert([
+
+        $status = WorkerCompetency::create([
             'worker_id' => $request->worker_id,
             'competency_id' => $request->competency_id,
             'certification_institute' => $request->certification_institute,
             'effective_date' => $request->effective_date,
             'expiration_date' => $request->expiration_date,
             'update_status' => $request->update_status,
+            'certificate' => '',
             'verification_status' => '0',
             'created_at' => date('Y-m-d H:i:s'), 
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
+        $destinationPath = 'upload/certificate';
+        $certificateName = $status->id.'.'.$request->certificate->extension();
+        $request->certificate->move(public_path($destinationPath), $certificateName);
+        $status->certificate = $certificateName;
+        $status->save();
         return redirect(route('worker.detail', ['id_number' => Worker::where('id', '=', $request->worker_id)->first()->id_number]));
     }
     public function updateView($id)
@@ -107,7 +116,6 @@ class WorkerCompetencyController extends Controller
             'expiration_date' => 'required',
             'update_status' => 'required',
         ]);
-        
         $workerCompetency = WorkerCompetency::where('id', '=', $request->id)->first();
         $workerCompetency->worker_id = $request->worker_id;
         $workerCompetency->competency_id = $request->competency_id;
@@ -117,7 +125,18 @@ class WorkerCompetencyController extends Controller
         $workerCompetency->update_status = $request->update_status;
         $workerCompetency->verification_status = '0';
         $workerCompetency->updated_at = date('Y-m-d H:i:s');
+        if($request->certificate){
+            $destinationPath = public_path().'\upload\certificate';
+            $certificateName = $destinationPath.'\\'.$workerCompetency->certificate;
+            File::delete($certificateName);
+            $destinationPath = 'upload/certificate';
+            $certificateName = $workerCompetency->id.'.'.$request->certificate->extension();
+            $request->certificate->move(public_path($destinationPath), $certificateName);
+            $workerCompetency->certificate = $certificateName;
+        }
+        
         $workerCompetency->save();
+
         return redirect(route('worker.detail', ['id_number' => Worker::where('id', '=', $request->worker_id)->first()->id_number]));
     }
     
@@ -128,6 +147,11 @@ class WorkerCompetencyController extends Controller
         };
         $workerCompetency = WorkerCompetency::where('id', '=', $id)->first();
         $worker = $workerCompetency->worker();
+        
+        $destinationPath = public_path().'\upload\certificate';
+        $certificateName = $destinationPath.'\\'.$workerCompetency->certificate;
+        File::delete($certificateName);
+
         $workerCompetency->delete();
         return redirect(route('worker.detail', ['id_number' => $worker->id_number]));
     }

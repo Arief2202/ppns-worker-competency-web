@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Schedule') }}
+            {{ __('Activities') }}
         </h2>
     </x-slot>
 
@@ -23,7 +23,7 @@
                             
                             @if(Auth::user()->role == 3)
                                 <div class="col-md-auto d-flex justify-content-end">
-                                    <a href="{{ route('schedule.manage') }}" class="btn btn-primary" style="height:40px">Manage Schedule</a>
+                                    <a href="{{ route('schedule.manage') }}" class="btn btn-primary" style="height:40px">Work Activities</a>
                                 </div>
                             @endif
                         </div>

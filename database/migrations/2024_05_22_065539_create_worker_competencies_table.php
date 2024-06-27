@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('expiration_date')->useCurrent();
             $table->string('update_status');
             $table->string('verification_status')->default('0');
+            $table->string('certificate')->default('');
             $table->timestamps();
         });
     }

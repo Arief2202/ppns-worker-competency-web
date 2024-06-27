@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-dark2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form method="POST" action="{{ route('worker.competency.update.post') }}">@csrf
+                    <form method="POST" action="{{ route('worker.competency.update.post') }}" enctype="multipart/form-data">@csrf
                       <input type="hidden" name="id" value="{{ $workerCompetency->id }}">
                       <input type="hidden" name="worker_id" value="{{ $workerCompetency->worker()->id }}">
                       <input type="hidden" name="competency_id" id="competency_id" value="{{ old('competency_id', $workerCompetency->competency_id) }}">
@@ -92,6 +92,16 @@
                                   </div>
                                 @enderror
                               </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                              <label for="certificate" class="form-label">Certificate</label>
+                              <input class="form-control @error('certificate') is-invalid @enderror" type="file" id="certificate" name="certificate">
+                              @error('certificate')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                              @enderror
                             </div>
                             
                         </div>

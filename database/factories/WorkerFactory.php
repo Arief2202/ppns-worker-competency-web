@@ -17,7 +17,7 @@ class WorkerFactory extends Factory
     public function definition(): array
     {
         return [
-            'photo' => '3120500011.jpg',
+            'photo' => 'dummy.jpg',
             'id_number' => rand(10000,100000),
             'name' => fake()->name(),
             'active_status' => 'Active',

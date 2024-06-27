@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Schedule;
 use App\Models\ScheduleWorkers;
 use App\Models\ScheduleTimes;
+use App\Models\Worker;
 use DateTime;
 
 class ScheduleController extends Controller
@@ -17,14 +18,15 @@ class ScheduleController extends Controller
         if(Auth::user()->role != 3){
             return redirect('schedule');
         };
-        return view('schedule.create');
+        return view('schedule.create', [
+            'workers' => Worker::all(),
+        ]);
     }
     public function create(Request $request)
     { 
         if(Auth::user()->role != 3){
             return redirect('schedule');
         };
-        
         $validated = $request->validate([
             'working_activity' => 'required',
             'supervisor' => 'required',
@@ -94,6 +96,7 @@ class ScheduleController extends Controller
         if($schedule){
             return view('schedule.update', [
                 'schedule' => $schedule,
+                'workers' => Worker::all()
             ]);
         }
         else return redirect(route('schedule.manage'));
@@ -107,11 +110,12 @@ class ScheduleController extends Controller
 
         $validated = $request->validate([
             'working_activity' => 'required',
-            'supervisor' => 'required',
             'location' => 'required',
         ]);
         $schedule->working_activity = $request->working_activity;
-        $schedule->supervisor = $request->supervisor;
+        if(isset($request->supervisor) && $schedule->supervisor != $request->supervisor){
+            $schedule->supervisor = $request->supervisor;
+        }
         $schedule->location = $request->location;
         $schedule->updated_at = date('Y-m-d H:i:s');
         $schedule->save();

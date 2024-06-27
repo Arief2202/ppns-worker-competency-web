@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Manage Schedule') }}
+            {{ __('Work Activities') }}
         </h2>
     </x-slot>
 
@@ -14,7 +14,7 @@
                         @if(Auth::user()->role == 3)
                         <div class="d-flex justify-content-between mb-3">
                             <a href="{{ route('schedule') }}" class="btn btn-secondary">< Back</a>
-                            <a class="btn btn-primary" href="{{ route('schedule.create') }}">Add Schedule</a>
+                            <a class="btn btn-primary" href="{{ route('schedule.create') }}">Add Work Activities</a>
                         </div>
                         @endif
                         <table id="myTable" class="display">

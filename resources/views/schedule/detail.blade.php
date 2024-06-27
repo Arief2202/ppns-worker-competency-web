@@ -11,7 +11,7 @@
                     <a href="{{ route('schedule.manage') }}" class="btn btn-secondary ms-3">< Back</a>
                     
                     <div class="d-flex justify-content-between m-3">
-                        <h3>Schedule Detail</h3>
+                        <h3>Detail of Work Activities</h3>
                         @if(Auth::user()->role == 3)
                         <a href="{{ route('schedule.update', ['id' => $schedule->id]) }}" class="btn btn-primary">Edit Data</a>
                         @else
@@ -41,7 +41,7 @@
                                 @if(Auth::user()->role == 3)
                                 <div class="d-flex justify-content-between mb-3">
                                     <h3>Date Time</h3>
-                                    <a class="btn btn-primary" href="{{ route('schedule.time.create', ['schedule_id'=>$schedule->id]) }}">Add Date Time</a>
+                                    <a class="btn btn-primary" href="{{ route('schedule.time.create', ['schedule_id'=>$schedule->id]) }}">Add Date & Time</a>
                                 </div>
                                 @endif
                                 <table id="myTable" class="display">

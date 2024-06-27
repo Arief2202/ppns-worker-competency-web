@@ -13,7 +13,7 @@
                     <div class="ps-3 pe-3 pb-3">                                 
                         @if(Auth::user()->role == 1)
                         <div class="d-flex justify-content-end mb-3">
-                            <a class="btn btn-primary" href="{{ route('worker.create') }}">Add Worker</a>
+                            <a class="btn btn-primary" href="{{ route('worker.create') }}">Add New Worker</a>
                         </div>
                         @endif
                         <table id="myTable" class="display">

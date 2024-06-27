@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-dark2 dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form method="POST" action="{{ route('worker.competency.create.post') }}">@csrf
+                    <form method="POST" action="{{ route('worker.competency.create.post') }}" enctype="multipart/form-data">@csrf
                       <input type="hidden" name="worker_id" value="{{ $worker->id }}">
                       <input type="hidden" name="competency_id" id="competency_id" value="{{ old('competency_id') }}">
                         <div class="mb-3">
@@ -92,6 +92,17 @@
                                 @enderror
                               </div>
                             </div>
+
+                            <div class="mb-3">
+                              <label for="certificate" class="form-label">Certificate</label>
+                              <input class="form-control @error('certificate') is-invalid @enderror" type="file" id="certificate" name="certificate">
+                              @error('certificate')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                              @enderror
+                          </div>
+                            
                         </div>
                         <div class="d-flex justify-content-end">
                             <a href="{{ route('worker.detail', ['id_number'=>$worker->id_number]) }}" class="btn btn-secondary me-3">Cancel</a>
