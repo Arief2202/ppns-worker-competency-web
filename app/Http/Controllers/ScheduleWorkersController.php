@@ -47,7 +47,7 @@ class ScheduleWorkersController extends Controller
             'created_at' => date('Y-m-d H:i:s'), 
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
-        return redirect(route('schedule.detail', ['id' => $request->schedule_id]));
+        return redirect(route('schedule.create', ['id' => $request->schedule_id]));
     }
     
     public function updateView($id)
@@ -98,7 +98,7 @@ class ScheduleWorkersController extends Controller
         $id_schedule = $ScheduleWorkers->schedule_id;
         $ScheduleWorkers->delete();
 
-        return redirect(route('schedule.detail', ['id' => $id_schedule]));
+        return redirect(route('schedule.create'));
     }
 
     

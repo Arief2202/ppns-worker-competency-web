@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Schedule;
 use App\Models\ScheduleWorkers;
 use App\Models\ScheduleTimes;
+use App\Models\Competency;
 use App\Models\Worker;
 use DateTime;
 
@@ -19,6 +20,7 @@ class ScheduleController extends Controller
             return redirect('schedule');
         };
         return view('schedule.create', [
+            'schedule' => Schedule::where('is_submited', '=', '0')->first(),
             'workers' => Worker::all(),
         ]);
     }
@@ -31,15 +33,48 @@ class ScheduleController extends Controller
             'working_activity' => 'required',
             'supervisor' => 'required',
             'location' => 'required',
+            'date' => 'required',
+            'start_time' => 'required',
+            'end_time' => 'required',
         ]);
-        $status = Schedule::insert([
-            'working_activity' => $request->working_activity,
-            'supervisor' => $request->supervisor,
-            'location' => $request->location,
-            'created_at' => date('Y-m-d H:i:s'), 
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
-        return redirect(route('schedule.manage'));
+        $schedule = Schedule::where('is_submited', '=', '0')->first();
+        if(!$schedule){
+            $schedule = Schedule::create([
+                'working_activity' => $request->working_activity,
+                'supervisor' => $request->supervisor,
+                'location' => $request->location,
+                'note' => $request->note,
+                'created_at' => date('Y-m-d H:i:s'), 
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
+        else{
+            $schedule->working_activity = $request->working_activity;
+            $schedule->supervisor = $request->supervisor;
+            $schedule->location = $request->location;
+            $schedule->note = $request->note;
+            $schedule->updated_at = date('Y-m-d H:i:s');
+            $schedule->save();
+        }
+        $scheduleTime = ScheduleTimes::where('schedule_id', '=', $schedule->id)->first();
+        if(!$scheduleTime){
+            $scheduleTime = ScheduleTimes::create([
+                'schedule_id' => $schedule->id,
+                'date' => $request->date,
+                'start_time' => $request->date." ".$request->start_time.":00",
+                'end_time' => $request->date." ".$request->end_time.":00",
+                'created_at' => date('Y-m-d H:i:s'), 
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
+        else{
+            $scheduleTime->schedule_id = $schedule->id;
+            $scheduleTime->date = $request->date;
+            $scheduleTime->start_time = $request->date." ".$request->start_time.":00";
+            $scheduleTime->end_time = $request->date." ".$request->end_time.":00";
+            $scheduleTime->save();
+        }
+        return redirect(route('schedule.create'));
     }
     
     public function read(Request $request)
@@ -72,8 +107,20 @@ class ScheduleController extends Controller
             return redirect('schedule');
         };
         return view('schedule.manage',[
-            'schedules' => Schedule::all(),
+            'schedules' => Schedule::where('is_submited', '=', '1')->get(),
         ]);
+    }
+
+    public function submit($id){
+        
+        if(Auth::user()->role != 3){
+            return redirect('schedule');
+        };
+        
+        $schedule = Schedule::where('id', $id)->first();
+        $schedule->is_submited = 1;
+        $schedule->save();
+        return redirect(route('schedule.manage'));
     }
 
     public function detailTime(Request $request)

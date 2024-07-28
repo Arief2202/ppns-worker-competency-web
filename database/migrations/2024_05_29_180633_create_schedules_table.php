@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('working_activity');
             $table->string('supervisor');
             $table->string('location'); 
+            $table->string('note')->nullable(); 
+            $table->integer('is_submited')->default('0'); 
             $table->timestamps();
         });
     }

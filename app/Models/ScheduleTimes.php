@@ -9,6 +9,10 @@ class ScheduleTimes extends Model
 {
     use HasFactory;
     
+    protected $guarded = [
+        'id',
+    ];
+    
     public function schedule()
     {
         return Schedule::where('id', $this->schedule_id)->first();

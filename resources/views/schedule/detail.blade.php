@@ -13,7 +13,7 @@
                     <div class="d-flex justify-content-between m-3">
                         <h3>Detail of Work Activities</h3>
                         @if(Auth::user()->role == 3)
-                        <a href="{{ route('schedule.update', ['id' => $schedule->id]) }}" class="btn btn-primary">Edit Data</a>
+                        <a href="{{ route('schedule.delete', ['id' => $schedule->id]) }}" class="btn btn-danger">Delete Data</a>
                         @else
                         <div></div>
                         @endif
@@ -31,11 +31,23 @@
                             <span class="input-group-text" id="inputGroup-sizing-sm"style="width: 150px">Location</span>
                             <input type="text" class="form-control" value="{{ $schedule->location }}" disabled>
                         </div>
+                        <div class="input-group input-group mb-2">
+                            <span class="input-group-text" id="inputGroup-sizing-sm"style="width: 150px">Date Time</span>
+                            <?php  
+                                $time2 = $schedule->times()->first();
+                                $date = date('Y-m-d (l)', strtotime($time2->date)).", ".date('H:i', strtotime($time2->start_time))." - ".date('H:i', strtotime($time2->end_time));
+                            ?>
+                            <input type="text" class="form-control" value="{{ $date }}" disabled>
+                        </div>
+                        <div class="input-group input-group mb-2">
+                            <span class="input-group-text" id="inputGroup-sizing-sm"style="width: 150px">Note</span>
+                            <input type="text" class="form-control" value="{{ $schedule->note }}" disabled>
+                        </div>
                     </div>
                     <hr>
 
                     <div class="row">
-                        <div class="col-xl-6">
+                        {{-- <div class="col-xl-6">
 
                             <div class="ps-3 pe-3 pb-3">
                                 @if(Auth::user()->role == 3)
@@ -68,14 +80,14 @@
                                 </table>
                             </div>
                             
-                        </div>
-                        <div class="col-xl-6">
+                        </div> --}}
+                        <div class="col">
 
                             <div class="ps-3 pe-3 pb-3">
                                 @if(Auth::user()->role == 3)
                                 <div class="d-flex justify-content-between mb-3">
                                     <h3>Workers</h3>
-                                    <a class="btn btn-primary" href="{{ route('schedule.worker.create', ['schedule_id'=>$schedule->id]) }}">Add Worker</a>
+                                    {{-- <a class="btn btn-primary" href="{{ route('schedule.worker.create', ['schedule_id'=>$schedule->id]) }}">Add Worker</a> --}}
                                 </div>
                                 @endif
                                 <table id="myTable2" class="display">
@@ -84,7 +96,7 @@
                                             <th>No</th>
                                             <th>Competency</th>
                                             <th>Worker</th>
-                                            @if(Auth::user()->role == 3)<th>Action</th>@endif
+                                            {{-- @if(Auth::user()->role == 3)<th>Action</th>@endif --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -93,7 +105,7 @@
                                                 <td>{{ $i+1 }}</td>
                                                 <td>{{ $sworker->competency()->competency_name }}</td>
                                                 <td>{{ $sworker->worker()->name }}</td>
-                                                @if(Auth::user()->role == 3)<td><a href="{{ route('schedule.worker.update', ['id' => $sworker->id]) }}" class="btn btn-secondary">Edit</a></td>@endif
+                                                {{-- @if(Auth::user()->role == 3)<td><a href="{{ route('schedule.worker.update', ['id' => $sworker->id]) }}" class="btn btn-secondary">Edit</a></td>@endif --}}
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -114,12 +126,12 @@
         <script type="text/javascript">
             $(document).ready( function () {
                 $('#myTable').DataTable({
-                    scrollX: true,
+                    // scrollX: true,
                     pageLength : 5,
                     lengthMenu: [[5, 10], [5, 10]]
                 });
                 $('#myTable2').DataTable({
-                    scrollX: true,
+                    // scrollX: true,
                     pageLength : 5,
                     lengthMenu: [[5, 10], [5, 10]]
                 }

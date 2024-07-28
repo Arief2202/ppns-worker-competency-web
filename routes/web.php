@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/schedule/update', 'update')->name('schedule.update.post');
 
         Route::get('/schedule/delete/{id}', 'delete')->name('schedule.delete');
+        Route::POST('/schedule/submit/{id}', 'submit')->name('schedule.submit');
     });
 
     Route::controller(ScheduleTimesController::class)->group(function () {        
