@@ -66,7 +66,7 @@
                         </div>
                         <div class="mb-3">
                           <label for="input1" class="form-label">Date</label>
-                          <input type="date" class="form-control @error('date') is-invalid @enderror" id="input1" name="date" value="@if($schedule){{date('Y-m-d', strtotime($schedule->times()->first()->date))}}@else{{old('date')}}@endif">
+                          <input type="date" class="form-control @error('date') is-invalid @enderror" id="input1" name="date" min="{{date('Y-m-d')}}" value="@if($schedule){{date('Y-m-d', strtotime($schedule->times()->first()->date))}}@else{{old('date')}}@endif">
                           @error('date')
                             <div class="invalid-feedback">
                                 {{ $message }}
